@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyEase - Kelola Uang Kamu</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Playful Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #AAC4F5 0%, #8CA9FF 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .container-app {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8CA9FF 0%, #AAC4F5 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 15px rgba(140, 169, 255, 0.3);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #AAC4F5 0%, #8CA9FF 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(140, 169, 255, 0.3);
+        }
+        
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:active {
+            transform: scale(0.97);
+        }
+        
+        .stat-card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card.income {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        
+        .stat-card.expense {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+        
+        .stat-amount {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .btn-action {
+            padding: 18px;
+            border-radius: 15px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn-action:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .btn-income {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .btn-expense {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+        
+        .period-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 12px;
+        }
+        
+        .period-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #6c757d;
+        }
+        
+        .period-btn.active {
+            background: linear-gradient(135deg, #8CA9FF 0%, #AAC4F5 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(140, 169, 255, 0.3);
+        }
+        
+        .transaction-list {
+            margin-top: 20px;
+        }
+        
+        .transaction-group {
+            margin-bottom: 25px;
+        }
+        
+        .transaction-group-title {
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        
+        .transaction-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #8CA9FF;
+        }
+        
+        .transaction-item.expense {
+            border-left-color: #dc3545;
+        }
+        
+        .transaction-item.income {
+            border-left-color: #28a745;
+        }
+        
+        .transaction-info {
+            flex: 1;
+        }
+        
+        .transaction-category {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 3px;
+        }
+        
+        .transaction-time {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .transaction-amount.income {
+            color: #28a745;
+        }
+        
+        .transaction-amount.expense {
+            color: #dc3545;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+        }
+        
+        .nav-item i {
+            font-size: 22px;
+            color: #6c757d;
+            display: block;
+            margin-bottom: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            color: #6c757d;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active i,
+        .nav-item.active span {
+            color: #8CA9FF;
+        }
+        
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .modal-content {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            border-radius: 25px 25px 0 0;
+            padding: 25px;
+            animation: slideUp 0.3s;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Quicksand', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #8CA9FF;
+            box-shadow: 0 0 0 3px rgba(140, 169, 255, 0.1);
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-submit:active {
+            transform: translateY(2px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stats-card-title {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .stats-card-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .chart-placeholder {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        .category-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .category-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .category-amount {
+            font-weight: 700;
+            color: #dc3545;
+        }
+        
+        .profile-card {
+            background: linear-gradient(135deg, #AAC4F5 0%, #8CA9FF 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #8CA9FF;
+        }
+        
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .menu-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .menu-item {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .menu-item:active {
+            transform: scale(0.98);
+        }
+        
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .menu-item-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #AAC4F5 0%, #8CA9FF 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .menu-item-text {
+            font-weight: 600;
+            color: #212529;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-app">
+        <!-- Home Page -->
+        <div id="homePage" class="page">
+            <div class="header">
+                <h1><i class="fas fa-wallet"></i> MoneyEase</h1>
+                <p>Kelola uangmu dengan mudah</p>
+            </div>
+            
+            <div class="content">
+                <div class="balance-card">
+                    <div class="balance-label">Saldo Kamu</div>
+                    <div class="balance-amount" id="totalBalance">Rp 0</div>
+                    <div class="balance-label" id="periodText">Hari Ini</div>
+                </div>
+                
+                <div class="quick-stats">
+                    <div class="stat-card income">
+                        <i class="fas fa-arrow-down"></i>
+                        <div class="stat-amount" id="totalIncome">Rp 0</div>
+                        <div class="stat-label">Pemasukan</div>
+                    </div>
+                    <div class="stat-card expense">
+                        <i class="fas fa-arrow-up"></i>
+                        <div class="stat-amount" id="totalExpense">Rp 0</div>
+                        <div class="stat-label">Pengeluaran</div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-action btn-income" onclick="openModal('income')">
+                        <i class="fas fa-plus"></i> Pemasukan
+                    </button>
+                    <button class="btn-action btn-expense" onclick="openModal('expense')">
+                        <i class="fas fa-minus"></i> Pengeluaran
+                    </button>
+                </div>
+                
+                <div class="transaction-list" id="recentTransactions">
+                    <h5 style="font-weight: 700; color: #495057; margin-bottom: 15px;">Transaksi Terbaru</h5>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History Page -->
+        <div id="historyPage" class="page" style="display: none;">
+            <div class="header">
+                <h1><i class="fas fa-history"></i> Riwayat</h1>
+                <p>Semua transaksi kamu</p>
+            </div>
+            
+            <div class="content">
+                <div class="period-selector">
+                    <button class="period-btn active" onclick="changePeriod('today')">Hari Ini</button>
+                    <button class="period-btn" onclick="changePeriod('week')">Minggu</button>
+                    <button class="period-btn" onclick="changePeriod('month')">Bulan</button>
+                </div>
+                
+                <div id="historyList"></div>
+            </div>
+        </div>
+        
+        <!-- Statistics Page -->
+        <div id="statsPage" class="page" style="display: none;">
+            <div class="header">
+                <h1><i class="fas fa-chart-pie"></i> Statistik</h1>
+                <p>Analisis keuanganmu</p>
+            </div>
+            
+            <div class="content">
+                <div class="period-selector">
+                    <button class="period-btn active" onclick="changeStatsPeriod('today')">Hari Ini</button>
+                    <button class="period-btn" onclick="changeStatsPeriod('week')">Minggu</button>
+                    <button class="period-btn" onclick="changeStatsPeriod('month')">Bulan</button>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <div class="stats-card-title">Total Pemasukan</div>
+                        <div class="stats-card-value" id="statsIncome" style="color: #28a745;">Rp 0</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-card-title">Total Pengeluaran</div>
+                        <div class="stats-card-value" id="statsExpense" style="color: #dc3545;">Rp 0</div>
+                    </div>
+                </div>
+                
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p>Pengeluaran per Kategori</p>
+                </div>
+                
+                <div class="category-list" id="categoryList"></div>
+            </div>
+        </div>
+        
+        <!-- Profile Page -->
+        <div id="profilePage" class="page" style="display: none;">
+            <div class="header">
+                <h1><i class="fas fa-user"></i> Profil</h1>
+                <p>Pengaturan akun</p>
+            </div>
+            
+            <div class="content">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-name">Pengguna MoneyEase</div>
+                    <div>Pelajar/Mahasiswa</div>
+                </div>
+                
+                <div class="menu-list">
+                    <div class="menu-item" onclick="alert('Fitur dalam pengembangan')">
+                        <div class="menu-item-left">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="menu-item-text">Notifikasi</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: #6c757d;"></i>
+                    </div>
+                    
+                    <div class="menu-item" onclick="alert('Fitur dalam pengembangan')">
+                        <div class="menu-item-left">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="menu-item-text">Pengaturan</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: #6c757d;"></i>
+                    </div>
+                    
+                    <div class="menu-item" onclick="alert('Fitur dalam pengembangan')">
+                        <div class="menu-item-left">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="menu-item-text">Bantuan</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: #6c757d;"></i>
+                    </div>
+                    
+                    <div class="menu-item" onclick="alert('Fitur dalam pengembangan')">
+                        <div class="menu-item-left">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="menu-item-text">Tentang</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: #6c757d;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-item active" onclick="switchPage('home')">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" onclick="switchPage('history')">
+                <i class="fas fa-history"></i>
+                <span>Riwayat</span>
+            </button>
+            <button class="nav-item" onclick="switchPage('stats')">
+                <i class="fas fa-chart-pie"></i>
+                <span>Statistik</span>
+            </button>
+            <button class="nav-item" onclick="switchPage('profile')">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal Pemasukan -->
+    <div id="incomeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-arrow-down" style="color: #28a745;"></i> Tambah Pemasukan</h3>
+                <button class="close-modal" onclick="closeModal('income')">&times;</button>
+            </div>
+            <form onsubmit="addTransaction(event, 'income')">
+                <div class="form-group">
+                    <label class="form-label">Jumlah</label>
+                    <input type="number" class="form-control" id="incomeAmount" placeholder="Masukkan jumlah" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sumber</label>
+                    <select class="form-control" id="incomeSource" required>
+                        <option value="">Pilih sumber</option>
+                        <option value="Gaji">Gaji</option>
+                        <option value="Hadiah">Hadiah</option>
+                        <option value="Jual Barang">Jual Barang</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <i class="fas fa-check"></i> Simpan Pemasukan
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Pengeluaran -->
+    <div id="expenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-arrow-up" style="color: #dc3545;"></i> Tambah Pengeluaran</h3>
+                <button class="close-modal" onclick="closeModal('expense')">&times;</button>
+            </div>
+            <form onsubmit="addTransaction(event, 'expense')">
+                <div class="form-group">
+                    <label class="form-label">Jumlah</label>
+                    <input type="number" class="form-control" id="expenseAmount" placeholder="Masukkan jumlah" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kategori</label>
+                    <select class="form-control" id="expenseCategory" required>
+                        <option value="">Pilih kategori</option>
+                        <option value="Makanan/Minuman">Makanan/Minuman</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Hiburan">Hiburan</option>
+                        <option value="Rumah">Rumah</option>
+                        <option value="Pendidikan">Pendidikan</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);">
+                    <i class="fas fa-check"></i> Simpan Pengeluaran
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let currentPeriod = 'today';
+        let currentStatsPeriod = 'today';
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+        }
+        
+        // Get transactions from localStorage
+        function getTransactions() {
+            const transactions = localStorage.getItem('transactions');
+            return transactions ? JSON.parse(transactions) : [];
+        }
+        
+        // Save transactions to localStorage
+        function saveTransactions(transactions) {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+        
+        // Add new transaction
+        function addTransaction(event, type) {
+            event.preventDefault();
+            
+            const transactions = getTransactions();
+            const now = new Date();
+            
+            let transaction = {
+                id: Date.now(),
+                type: type,
+                date: now.toISOString(),
+                timestamp: now.getTime()
+            };
+            
+            if (type === 'income') {
+                transaction.amount = parseInt(document.getElementById('incomeAmount').value);
+                transaction.category = document.getElementById('incomeSource').value;
+            } else {
+                transaction.amount = parseInt(document.getElementById('expenseAmount').value);
+                transaction.category = document.getElementById('expenseCategory').value;
+            }
+            
+            transactions.push(transaction);
+            saveTransactions(transactions);
+            
+            closeModal(type);
+            updateUI();
+            
+            // Reset form
+            event.target.reset();
+        }
+        
+        // Filter transactions by period
+        function filterByPeriod(transactions, period) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            return transactions.filter(t => {
+                const transDate = new Date(t.date);
+                const transDay = new Date(transDate.getFullYear(), transDate.getMonth(), transDate.getDate());
+                
+                if (period === 'today') {
+                    return transDay.getTime() === today.getTime();
+                } else if (period === 'week') {
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return transDay >= weekAgo;
+                } else if (period === 'month') {
+                    return transDate.getMonth() === now.getMonth() && 
+                           transDate.getFullYear() === now.getFullYear();
+                }
+                return false;
+            });
+        }
+        
+        // Calculate totals
+        function calculateTotals(transactions) {
+            let income = 0;
+            let expense = 0;
+            
+            transactions.forEach(t => {
+                if (t.type === 'income') {
+                    income += t.amount;
+                } else {
+                    expense += t.amount;
+                }
+            });
+            
+            return {
+                income: income,
+                expense: expense,
+                balance: income - expense
+            };
+        }
+        
+        // Update home page UI
+        function updateHomeUI() {
+            const transactions = getTransactions();
+            const filtered = filterByPeriod(transactions, currentPeriod);
+            const totals = calculateTotals(filtered);
+            
+            document.getElementById('totalBalance').textContent = formatCurrency(totals.balance);
+            document.getElementById('totalIncome').textContent = formatCurrency(totals.income);
+            document.getElementById('totalExpense').textContent = formatCurrency(totals.expense);
+            
+            const periodTexts = {
+                'today': 'Hari Ini',
+                'week': 'Minggu Ini',
+                'month': 'Bulan Ini'
+            };
+            document.getElementById('periodText').textContent = periodTexts[currentPeriod];
+            
+            // Show recent 5 transactions
+            const recentContainer = document.getElementById('recentTransactions');
+            const recent = transactions.slice(-5).reverse();
+            
+            if (recent.length === 0) {
+                recentContainer.innerHTML = `
+                    <h5 style="font-weight: 700; color: #495057; margin-bottom: 15px;">Transaksi Terbaru</h5>
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Belum ada transaksi</p>
+                    </div>
+                `;
+            } else {
+                let html = '<h5 style="font-weight: 700; color: #495057; margin-bottom: 15px;">Transaksi Terbaru</h5>';
+                recent.forEach(t => {
+                    const date = new Date(t.date);
+                    const time = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    
+                    html += `
+                        <div class="transaction-item ${t.type}">
+                            <div class="transaction-info">
+                                <div class="transaction-category">${t.category}</div>
+                                <div class="transaction-time">${time}</div>
+                            </div>
+                            <div class="transaction-amount ${t.type}">
+                                ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
+                            </div>
+                        </div>
+                    `;
+                });
+                recentContainer.innerHTML = html;
+            }
+        }
+        
+        // Update history page UI
+        function updateHistoryUI() {
+            const transactions = getTransactions();
+            const filtered = filterByPeriod(transactions, currentPeriod);
+            const historyList = document.getElementById('historyList');
+            
+            if (filtered.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Tidak ada transaksi</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group by date
+            const grouped = {};
+            filtered.forEach(t => {
+                const date = new Date(t.date);
+                const dateKey = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                if (!grouped[dateKey]) {
+                    grouped[dateKey] = [];
+                }
+                grouped[dateKey].push(t);
+            });
+            
+            let html = '';
+            Object.keys(grouped).reverse().forEach(dateKey => {
+                html += `
+                    <div class="transaction-group">
+                        <div class="transaction-group-title">${dateKey}</div>
+                `;
+                
+                grouped[dateKey].reverse().forEach(t => {
+                    const time = new Date(t.date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    html += `
+                        <div class="transaction-item ${t.type}">
+                            <div class="transaction-info">
+                                <div class="transaction-category">${t.category}</div>
+                                <div class="transaction-time">${time}</div>
+                            </div>
+                            <div class="transaction-amount ${t.type}">
+                                ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            });
+            
+            historyList.innerHTML = html;
+        }
+        
+        // Update statistics page UI
+        function updateStatsUI() {
+            const transactions = getTransactions();
+            const filtered = filterByPeriod(transactions, currentStatsPeriod);
+            const totals = calculateTotals(filtered);
+            
+            document.getElementById('statsIncome').textContent = formatCurrency(totals.income);
+            document.getElementById('statsExpense').textContent = formatCurrency(totals.expense);
+            
+            // Calculate expenses by category
+            const categoryTotals = {};
+            filtered.forEach(t => {
+                if (t.type === 'expense') {
+                    if (!categoryTotals[t.category]) {
+                        categoryTotals[t.category] = 0;
+                    }
+                    categoryTotals[t.category] += t.amount;
+                }
+            });
+            
+            const categoryList = document.getElementById('categoryList');
+            
+            if (Object.keys(categoryTotals).length === 0) {
+                categoryList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-pie"></i>
+                        <p>Belum ada data pengeluaran</p>
+                    </div>
+                `;
+            } else {
+                let html = '<h5 style="font-weight: 700; color: #495057; margin-bottom: 15px;">Pengeluaran per Kategori</h5>';
+                
+                Object.entries(categoryTotals)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([category, amount]) => {
+                        const percentage = totals.expense > 0 ? (amount / totals.expense * 100).toFixed(1) : 0;
+                        html += `
+                            <div class="category-item">
+                                <div>
+                                    <div class="category-name">${category}</div>
+                                    <div style="font-size: 12px; color: #6c757d; margin-top: 3px;">${percentage}%</div>
+                                </div>
+                                <div class="category-amount">${formatCurrency(amount)}</div>
+                            </div>
+                        `;
+                    });
+                
+                categoryList.innerHTML = html;
+            }
+        }
+        
+        // Update all UI
+        function updateUI() {
+            updateHomeUI();
+            updateHistoryUI();
+            updateStatsUI();
+        }
+        
+        // Switch page
+        function switchPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            
+            // Show selected page
+            if (page === 'home') {
+                document.getElementById('homePage').style.display = 'block';
+                updateHomeUI();
+            } else if (page === 'history') {
+                document.getElementById('historyPage').style.display = 'block';
+                updateHistoryUI();
+            } else if (page === 'stats') {
+                document.getElementById('statsPage').style.display = 'block';
+                updateStatsUI();
+            } else if (page === 'profile') {
+                document.getElementById('profilePage').style.display = 'block';
+            }
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+        }
+        
+        // Open modal
+        function openModal(type) {
+            const modal = type === 'income' ? document.getElementById('incomeModal') : document.getElementById('expenseModal');
+            modal.style.display = 'block';
+            
+            // Focus on amount input
+            setTimeout(() => {
+                const input = type === 'income' ? document.getElementById('incomeAmount') : document.getElementById('expenseAmount');
+                input.focus();
+            }, 300);
+        }
+        
+        // Close modal
+        function closeModal(type) {
+            const modal = type === 'income' ? document.getElementById('incomeModal') : document.getElementById('expenseModal');
+            modal.style.display = 'none';
+        }
+        
+        // Change period
+        function changePeriod(period) {
+            currentPeriod = period;
+            
+            // Update active button
+            document.querySelectorAll('#historyPage .period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            updateHistoryUI();
+        }
+        
+        // Change stats period
+        function changeStatsPeriod(period) {
+            currentStatsPeriod = period;
+            
+            // Update active button
+            document.querySelectorAll('#statsPage .period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            updateStatsUI();
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUI();
+        });
+    </script>
+</body>
+</html>
